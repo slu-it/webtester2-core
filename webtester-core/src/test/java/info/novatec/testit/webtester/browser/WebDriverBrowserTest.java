@@ -44,6 +44,11 @@ public class WebDriverBrowserTest {
         }
 
         @Test
+        public void windowsIsReturned() {
+            assertThat(browser.windows()).isNotNull();
+        }
+
+        @Test
         public void navigatorIsReturned() {
             assertThat(browser.navigate()).isNotNull();
         }

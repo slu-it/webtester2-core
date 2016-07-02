@@ -10,6 +10,7 @@ import info.novatec.testit.webtester.browser.operations.Navigator;
 import info.novatec.testit.webtester.browser.operations.PageSourceSaver;
 import info.novatec.testit.webtester.browser.operations.ScreenshotTaker;
 import info.novatec.testit.webtester.browser.operations.UrlOpener;
+import info.novatec.testit.webtester.browser.operations.Windows;
 import info.novatec.testit.webtester.config.Configuration;
 import info.novatec.testit.webtester.events.EventSystem;
 import info.novatec.testit.webtester.internal.OffersAdHocFinding;
@@ -95,7 +96,7 @@ public interface Browser extends OffersPageCreation, OffersAdHocFinding {
 
     /**
      * Opens the given URL in the {@link Browser browser}.
-	 
+     *
      * @param url the URL to open
      * @return the same instance for fluent API use
      * @see UrlOpener#url(String)
@@ -121,6 +122,14 @@ public interface Browser extends OffersPageCreation, OffersAdHocFinding {
      * @since 2.0
      */
     CurrentWindow currentWindow();
+
+    /**
+     * Returns this {@link Browser browser's} {@link Windows windows} operations.
+     *
+     * @return the windows operations
+     * @since 2.1
+     */
+    Windows windows();
 
     /**
      * Returns this {@link Browser browser's} {@link Navigator navigation} operations.
@@ -169,7 +178,6 @@ public interface Browser extends OffersPageCreation, OffersAdHocFinding {
      * @since 2.0
      */
     JavaScriptExecutor javaScript();
-
 
     /**
      * Returns this {@link Browser browser's} {@link EventSystem event system}.

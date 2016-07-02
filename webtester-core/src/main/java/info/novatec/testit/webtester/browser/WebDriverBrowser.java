@@ -14,6 +14,7 @@ import info.novatec.testit.webtester.browser.operations.Navigator;
 import info.novatec.testit.webtester.browser.operations.PageSourceSaver;
 import info.novatec.testit.webtester.browser.operations.ScreenshotTaker;
 import info.novatec.testit.webtester.browser.operations.UrlOpener;
+import info.novatec.testit.webtester.browser.operations.Windows;
 import info.novatec.testit.webtester.config.Configuration;
 import info.novatec.testit.webtester.config.builders.DefaultConfigurationBuilder;
 import info.novatec.testit.webtester.events.DispatchingEventSystem;
@@ -47,7 +48,8 @@ public final class WebDriverBrowser implements Browser {
     private final WebDriver webDriver;
 
     private final UrlOpener open;
-    private final CurrentWindow window;
+    private final CurrentWindow currentWindow;
+    private final Windows windows;
     private final Navigator navigate;
     private final AlertHandler alert;
     private final ScreenshotTaker screenshot;
@@ -67,7 +69,8 @@ public final class WebDriverBrowser implements Browser {
         this.webDriver = webDriver;
 
         this.open = new UrlOpener(this);
-        this.window = new CurrentWindow(this);
+        this.currentWindow = new CurrentWindow(this);
+        this.windows = new Windows(this);
         this.navigate = new Navigator(this);
         this.alert = new AlertHandler(this);
         this.screenshot = new ScreenshotTaker(this);
@@ -125,7 +128,12 @@ public final class WebDriverBrowser implements Browser {
 
     @Override
     public CurrentWindow currentWindow() {
-        return window;
+        return currentWindow;
+    }
+
+    @Override
+    public Windows windows() {
+        return windows;
     }
 
     @Override
