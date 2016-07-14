@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import integration.BaseIntegrationTest;
+import junit.extensions.FeatureTest;
 
 import info.novatec.testit.webtester.conditions.pagefragments.Present;
 import info.novatec.testit.webtester.conditions.pagefragments.Visible;
@@ -18,6 +19,7 @@ import info.novatec.testit.webtester.pages.Page;
 import info.novatec.testit.webtester.waiting.TimeoutException;
 
 
+@FeatureTest
 public class WaitUntilAnnotationFeatureTest extends BaseIntegrationTest {
 
     @Before

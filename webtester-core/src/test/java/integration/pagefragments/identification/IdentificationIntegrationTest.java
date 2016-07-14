@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import integration.BaseIntegrationTest;
+import junit.extensions.IntegrationTest;
 
 import info.novatec.testit.webtester.pagefragments.Link;
 import info.novatec.testit.webtester.pagefragments.PageFragment;
@@ -22,6 +23,7 @@ import info.novatec.testit.webtester.pagefragments.identification.producers.XPat
 import info.novatec.testit.webtester.pages.Page;
 
 
+@IntegrationTest
 public class IdentificationIntegrationTest extends BaseIntegrationTest {
 
     TestPage page;

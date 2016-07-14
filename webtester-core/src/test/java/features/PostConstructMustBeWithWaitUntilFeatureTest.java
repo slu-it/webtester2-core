@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import integration.BaseIntegrationTest;
+import junit.extensions.FeatureTest;
 
 import info.novatec.testit.webtester.conditions.pagefragments.PresentAndVisible;
 import info.novatec.testit.webtester.conditions.pagefragments.Visible;
@@ -15,6 +16,7 @@ import info.novatec.testit.webtester.pagefragments.annotations.WaitUntil;
 import info.novatec.testit.webtester.pages.Page;
 
 
+@FeatureTest
 public class PostConstructMustBeWithWaitUntilFeatureTest extends BaseIntegrationTest {
 
     @Before

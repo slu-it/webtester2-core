@@ -7,9 +7,12 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import org.junit.Test;
 
+import junit.extensions.UnitTest;
+
 import info.novatec.testit.webtester.config.Configuration;
 
 
+@UnitTest
 public class ClasspathPropertiesFileConfigurationAdapterTest {
 
     static final String PATH = "configurations/classpath-properties-file.properties";

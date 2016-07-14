@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.openqa.selenium.WebDriverException;
 
 import integration.BaseIntegrationTest;
+import junit.extensions.IntegrationTest;
 import utils.events.EventCaptor;
 
 import info.novatec.testit.webtester.events.pagefragments.ClearedEvent;
@@ -19,6 +20,7 @@ import info.novatec.testit.webtester.pagefragments.annotations.IdentifyUsing;
 import info.novatec.testit.webtester.pages.Page;
 
 
+@IntegrationTest
 public class GenericElementIntegrationTest extends BaseIntegrationTest {
 
     TestPage page;

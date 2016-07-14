@@ -7,9 +7,12 @@ import java.util.Arrays;
 
 import org.junit.Test;
 
+import junit.extensions.UnitTest;
+
 import info.novatec.testit.webtester.pagefragments.MultiSelect;
 
 
+@UnitTest
 public class SelectedTextsTest {
 
     @Test

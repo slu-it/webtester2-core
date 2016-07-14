@@ -14,11 +14,14 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import junit.extensions.UnitTest;
+
 import info.novatec.testit.webtester.browser.Browser;
 import info.novatec.testit.webtester.config.Configuration;
 import info.novatec.testit.webtester.pagefragments.PageFragment;
 
 
+@UnitTest
 @RunWith(Enclosed.class)
 public class WaitTest {
 

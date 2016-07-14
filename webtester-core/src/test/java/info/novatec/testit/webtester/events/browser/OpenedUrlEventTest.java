@@ -4,7 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
 
+import junit.extensions.UnitTest;
 
+
+@UnitTest
 public class OpenedUrlEventTest {
 
     @Test

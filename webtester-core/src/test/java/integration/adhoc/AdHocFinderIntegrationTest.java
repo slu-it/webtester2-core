@@ -16,13 +16,14 @@ import org.junit.runner.RunWith;
 import org.openqa.selenium.NoSuchElementException;
 
 import integration.BaseIntegrationTest;
+import junit.extensions.IntegrationTest;
 
 import info.novatec.testit.webtester.pagefragments.GenericElement;
 import info.novatec.testit.webtester.pagefragments.PageFragment;
 import info.novatec.testit.webtester.pagefragments.TextField;
 import info.novatec.testit.webtester.pages.Page;
 
-
+@IntegrationTest
 @RunWith(Enclosed.class)
 public class AdHocFinderIntegrationTest {
 

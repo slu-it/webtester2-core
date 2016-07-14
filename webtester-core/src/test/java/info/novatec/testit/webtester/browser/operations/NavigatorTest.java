@@ -19,12 +19,15 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.openqa.selenium.WebDriver;
 
+import junit.extensions.UnitTest;
+
 import info.novatec.testit.webtester.browser.Browser;
 import info.novatec.testit.webtester.events.EventSystem;
 import info.novatec.testit.webtester.events.browser.NavigatedBackwardsEvent;
 import info.novatec.testit.webtester.events.browser.NavigatedForwardsEvent;
 
 
+@UnitTest
 @RunWith(Enclosed.class)
 public class NavigatorTest {
 

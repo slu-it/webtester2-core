@@ -30,6 +30,8 @@ import org.openqa.selenium.WebDriver;
 
 import com.google.common.primitives.Bytes;
 
+import junit.extensions.UnitTest;
+
 import info.novatec.testit.webtester.browser.Browser;
 import info.novatec.testit.webtester.config.Configuration;
 import info.novatec.testit.webtester.events.Event;
@@ -37,6 +39,7 @@ import info.novatec.testit.webtester.events.EventSystem;
 import info.novatec.testit.webtester.events.browser.TookScreenshotEvent;
 
 
+@UnitTest
 @RunWith(Enclosed.class)
 public class ScreenshotTakerTest {
 

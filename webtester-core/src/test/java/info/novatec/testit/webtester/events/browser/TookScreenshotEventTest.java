@@ -8,7 +8,10 @@ import java.io.File;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import junit.extensions.UnitTest;
 
+
+@UnitTest
 public class TookScreenshotEventTest {
 
     @Test

@@ -18,11 +18,14 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.openqa.selenium.WebDriverException;
 
+import junit.extensions.UnitTest;
+
 import info.novatec.testit.webtester.browser.Browser;
 import info.novatec.testit.webtester.browser.operations.JavaScriptExecutor;
 import info.novatec.testit.webtester.pagefragments.PageFragment;
 
 
+@UnitTest
 @RunWith(MockitoJUnitRunner.class)
 public class DefaultStyleChangerTest {
 

@@ -25,6 +25,8 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.openqa.selenium.WebDriver;
 
+import junit.extensions.UnitTest;
+
 import info.novatec.testit.webtester.browser.Browser;
 import info.novatec.testit.webtester.config.Configuration;
 import info.novatec.testit.webtester.events.Event;
@@ -32,6 +34,7 @@ import info.novatec.testit.webtester.events.EventSystem;
 import info.novatec.testit.webtester.events.browser.SavedSourceCodeEvent;
 
 
+@UnitTest
 @RunWith(Enclosed.class)
 public class PageSourceSaverTest {
 

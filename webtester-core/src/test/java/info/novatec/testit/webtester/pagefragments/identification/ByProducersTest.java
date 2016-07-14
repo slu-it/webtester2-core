@@ -9,11 +9,14 @@ import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
 
+import junit.extensions.UnitTest;
+
 import info.novatec.testit.webtester.pagefragments.PageFragment;
 import info.novatec.testit.webtester.pagefragments.annotations.IdentifyUsing;
 import info.novatec.testit.webtester.pagefragments.identification.producers.ClassName;
 
 
+@UnitTest
 @RunWith(Enclosed.class)
 public class ByProducersTest {
 

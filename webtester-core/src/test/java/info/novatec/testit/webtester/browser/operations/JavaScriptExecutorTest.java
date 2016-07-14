@@ -17,11 +17,13 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 import utils.MockFactory;
+import junit.extensions.UnitTest;
 
 import info.novatec.testit.webtester.browser.Browser;
 import info.novatec.testit.webtester.pagefragments.PageFragment;
 
 
+@UnitTest
 @RunWith(Enclosed.class)
 public class JavaScriptExecutorTest {
 

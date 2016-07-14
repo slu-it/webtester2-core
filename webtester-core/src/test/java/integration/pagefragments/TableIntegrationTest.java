@@ -9,6 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import integration.BaseIntegrationTest;
+import junit.extensions.IntegrationTest;
 
 import info.novatec.testit.webtester.pagefragments.mapping.MappingException;
 import info.novatec.testit.webtester.pagefragments.Table;
@@ -17,6 +18,7 @@ import info.novatec.testit.webtester.pagefragments.annotations.IdentifyUsing;
 import info.novatec.testit.webtester.pages.Page;
 
 
+@IntegrationTest
 public class TableIntegrationTest extends BaseIntegrationTest {
 
     private static final String HEADER_ROW = "Header 1 Header 2 Header 3";

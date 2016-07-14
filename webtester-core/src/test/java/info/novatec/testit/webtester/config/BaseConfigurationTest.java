@@ -16,10 +16,13 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.openqa.selenium.support.Color;
 import org.openqa.selenium.support.Colors;
 
+import junit.extensions.UnitTest;
+
 import info.novatec.testit.webtester.config.exceptions.InvalidValueTypeException;
 import info.novatec.testit.webtester.config.exceptions.SetNullValuesException;
 
 
+@UnitTest
 @RunWith(Enclosed.class)
 public class BaseConfigurationTest {
 

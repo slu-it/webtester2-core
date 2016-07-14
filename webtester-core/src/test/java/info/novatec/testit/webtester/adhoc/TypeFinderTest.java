@@ -2,6 +2,7 @@ package info.novatec.testit.webtester.adhoc;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.expectThrows;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
@@ -10,202 +11,148 @@ import static org.mockito.Mockito.verify;
 
 import java.util.stream.Stream;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.runners.Enclosed;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
+
+import junit.extensions.UnitTest;
 
 import info.novatec.testit.webtester.internal.PageFragmentFactory;
 import info.novatec.testit.webtester.pagefragments.PageFragment;
 import info.novatec.testit.webtester.pagefragments.identification.ByProducers;
 
 
-@RunWith(Enclosed.class)
-public class TypeFinderTest {
+@UnitTest
+class TypeFinderTest {
 
-    @RunWith(MockitoJUnitRunner.class)
-    public static abstract class AbstractTypeFinderTest {
+    @Mock
+    PageFragmentFactory factory;
+    @Mock
+    SearchContext searchContext;
 
-        @Captor
-        ArgumentCaptor<By> byCaptor;
+    TypeFinder<PageFragment> cut;
 
-        @Mock
-        PageFragmentFactory factory;
-        @Mock
-        SearchContext searchContext;
+    @BeforeEach
+    void init() {
+        cut = new TypeFinder<>(factory, searchContext, PageFragment.class);
+    }
 
-        TypeFinder<TestFragment> cut;
+    @Test
+    @DisplayName("by(String) creates instance of configured type for found WebElement")
+    void byForString_fragmentIsCreatedForGivenBy() {
 
-        @Before
-        public void init() {
-            cut = new TypeFinder<>(factory, searchContext, TestFragment.class);
-        }
+        WebElement webElement = mock(WebElement.class);
+        PageFragment mockElement = mock(PageFragment.class);
+
+        doReturn(webElement).when(searchContext).findElement(any(By.class));
+        doReturn(mockElement).when(factory).pageFragment(PageFragment.class, webElement);
+
+        PageFragment element = cut.by("#someId");
+        assertThat(element).isSameAs(mockElement);
 
     }
 
-    public static class ByForString extends AbstractTypeFinderTest {
+    @Test
+    @DisplayName("by(String) given string is interpreted as a CSS selector")
+    void byForString_stringIsInterpretedAsCssSelector(ArgumentCaptor<By> byCaptor) {
 
-        @Test
-        public void fragmentIsCreatedForGivenBy() {
+        cut.by("#someId");
 
-            WebElement webElement = mock(WebElement.class);
-            TestFragment mockElement = mock(TestFragment.class);
+        verify(searchContext).findElement(byCaptor.capture());
 
-            doReturn(webElement).when(searchContext).findElement(any(By.class));
-            doReturn(mockElement).when(factory).pageFragment(TestFragment.class, webElement);
+        By by = byCaptor.getValue();
+        assertThat(by).isInstanceOf(By.ByCssSelector.class);
+        assertThat(by).hasToString("By.cssSelector: #someId");
 
-            TestFragment element = cut.by("#someId");
-            assertThat(element).isSameAs(mockElement);
+    }
 
-        }
-
-        @Test
-        public void stringIsInterpretedAsCssSelector() {
-
+    @Test
+    @DisplayName("by(String) throws NoSuchElementException if WebElement can't be found")
+    void byForString_noSuchElementExceptionsArePropagated() {
+        doThrow(NoSuchElementException.class).when(searchContext).findElement(any(By.class));
+        expectThrows(NoSuchElementException.class, () -> {
             cut.by("#someId");
+        });
+    }
 
-            verify(searchContext).findElement(byCaptor.capture());
+    @Test
+    @DisplayName("by(By) creates instance of configured type for found WebElement")
+    void byForBy_fragmentIsCreatedForGivenBy() {
 
-            By by = byCaptor.getValue();
-            assertThat(by).isInstanceOf(By.ByCssSelector.class);
-            assertThat(by).hasToString("By.cssSelector: #someId");
+        WebElement webElement = mock(WebElement.class);
+        PageFragment mockElement = mock(PageFragment.class);
 
-        }
+        doReturn(webElement).when(searchContext).findElement(any(By.ById.class));
+        doReturn(mockElement).when(factory).pageFragment(PageFragment.class, webElement);
 
-        @Test(expected = NoSuchElementException.class)
-        public void noSuchElementExceptionsArePropagated() {
-            doThrow(NoSuchElementException.class).when(searchContext).findElement(any(By.class));
-            cut.by("#someId");
-        }
+        PageFragment element = cut.by(ByProducers.id("someId"));
+        assertThat(element).isSameAs(mockElement);
 
     }
 
-    public static class ByForBy extends AbstractTypeFinderTest {
-
-        @Test
-        public void fragmentIsCreatedForGivenBy() {
-
-            WebElement webElement = mock(WebElement.class);
-            TestFragment mockElement = mock(TestFragment.class);
-
-            doReturn(webElement).when(searchContext).findElement(any(By.class));
-            doReturn(mockElement).when(factory).pageFragment(TestFragment.class, webElement);
-
-            TestFragment element = cut.by(ByProducers.id("someId"));
-            assertThat(element).isSameAs(mockElement);
-
-        }
-
-        @Test
-        public void stringIsInterpretedAsCssSelector() {
-
+    @Test
+    @DisplayName("by(By) throws NoSuchElementException if WebElement can't be found")
+    void byForBy_noSuchElementExceptionsArePropagated() {
+        doThrow(NoSuchElementException.class).when(searchContext).findElement(any(By.class));
+        expectThrows(NoSuchElementException.class, () -> {
             cut.by(ByProducers.id("someId"));
+        });
+    }
 
-            verify(searchContext).findElement(byCaptor.capture());
+    @Test
+    @DisplayName("manyBy(String) creates stream of configured type for found WebElement instances")
+    void manyByForString_fragmentIsCreatedForGivenBy() {
 
-            By by = byCaptor.getValue();
-            assertThat(by).isInstanceOf(By.ById.class);
-            assertThat(by).hasToString("By.id: someId");
+        WebElement webElement1 = mock(WebElement.class);
+        WebElement webElement2 = mock(WebElement.class);
+        doReturn(asList(webElement1, webElement2)).when(searchContext).findElements(any(By.class));
 
-        }
+        PageFragment mockElement1 = mock(PageFragment.class);
+        PageFragment mockElement2 = mock(PageFragment.class);
+        doReturn(mockElement1).when(factory).pageFragment(PageFragment.class, webElement1);
+        doReturn(mockElement2).when(factory).pageFragment(PageFragment.class, webElement2);
 
-        @Test(expected = NoSuchElementException.class)
-        public void noSuchElementExceptionsArePropagated() {
-            doThrow(NoSuchElementException.class).when(searchContext).findElement(any(By.class));
-            cut.by(ByProducers.id("someId"));
-        }
+        Stream<PageFragment> elements = cut.manyBy(".someClass");
+        assertThat(elements).containsExactly(mockElement1, mockElement2);
 
     }
 
-    public static class ManyByForString extends AbstractTypeFinderTest {
+    @Test
+    @DisplayName("manyBy(String) given string is interpreted as a CSS selector")
+    void manyByForString_stringIsInterpretedAsCssSelector(ArgumentCaptor<By> byCaptor) {
 
-        @Test
-        public void fragmentIsCreatedForGivenBy() {
+        cut.manyBy(".someClass");
 
-            WebElement webElement1 = mock(WebElement.class);
-            WebElement webElement2 = mock(WebElement.class);
-            doReturn(asList(webElement1, webElement2)).when(searchContext).findElements(any(By.class));
+        verify(searchContext).findElements(byCaptor.capture());
 
-            TestFragment mockElement1 = mock(TestFragment.class);
-            TestFragment mockElement2 = mock(TestFragment.class);
-            doReturn(mockElement1).when(factory).pageFragment(TestFragment.class, webElement1);
-            doReturn(mockElement2).when(factory).pageFragment(TestFragment.class, webElement2);
-
-            Stream<TestFragment> elements = cut.manyBy(".someClass");
-            assertThat(elements).containsExactly(mockElement1, mockElement2);
-
-        }
-
-        @Test
-        public void stringIsInterpretedAsCssSelector() {
-
-            cut.manyBy(".someClass");
-
-            verify(searchContext).findElements(byCaptor.capture());
-
-            By by = byCaptor.getValue();
-            assertThat(by).isInstanceOf(By.ByCssSelector.class);
-            assertThat(by).hasToString("By.cssSelector: .someClass");
-
-        }
-
-        @Test(expected = NoSuchElementException.class)
-        public void noSuchElementExceptionsArePropagated() {
-            doThrow(NoSuchElementException.class).when(searchContext).findElements(any(By.class));
-            cut.manyBy(".someClass");
-        }
+        By by = byCaptor.getValue();
+        assertThat(by).isInstanceOf(By.ByCssSelector.class);
+        assertThat(by).hasToString("By.cssSelector: .someClass");
 
     }
 
-    public static class ManyByForBy extends AbstractTypeFinderTest {
+    @Test
+    @DisplayName("manyBy(By) creates stream of configured type for found WebElement instances")
+    void manyByForBy_fragmentIsCreatedForGivenBy() {
 
-        @Test
-        public void fragmentIsCreatedForGivenBy() {
+        WebElement webElement1 = mock(WebElement.class);
+        WebElement webElement2 = mock(WebElement.class);
+        doReturn(asList(webElement1, webElement2)).when(searchContext).findElements(any(By.ByClassName.class));
 
-            WebElement webElement1 = mock(WebElement.class);
-            WebElement webElement2 = mock(WebElement.class);
-            doReturn(asList(webElement1, webElement2)).when(searchContext).findElements(any(By.class));
+        PageFragment mockElement1 = mock(PageFragment.class);
+        PageFragment mockElement2 = mock(PageFragment.class);
+        doReturn(mockElement1).when(factory).pageFragment(PageFragment.class, webElement1);
+        doReturn(mockElement2).when(factory).pageFragment(PageFragment.class, webElement2);
 
-            TestFragment mockElement1 = mock(TestFragment.class);
-            TestFragment mockElement2 = mock(TestFragment.class);
-            doReturn(mockElement1).when(factory).pageFragment(TestFragment.class, webElement1);
-            doReturn(mockElement2).when(factory).pageFragment(TestFragment.class, webElement2);
+        Stream<PageFragment> elements = cut.manyBy(ByProducers.className("someClass"));
+        assertThat(elements).containsExactly(mockElement1, mockElement2);
 
-            Stream<TestFragment> elements = cut.manyBy(ByProducers.className("someClass"));
-            assertThat(elements).containsExactly(mockElement1, mockElement2);
-
-        }
-
-        @Test
-        public void stringIsInterpretedAsCssSelector() {
-
-            cut.manyBy(ByProducers.className("someClass"));
-
-            verify(searchContext).findElements(byCaptor.capture());
-
-            By by = byCaptor.getValue();
-            assertThat(by).isInstanceOf(By.ByClassName.class);
-            assertThat(by).hasToString("By.className: someClass");
-
-        }
-
-        @Test(expected = NoSuchElementException.class)
-        public void noSuchElementExceptionsArePropagated() {
-            doThrow(NoSuchElementException.class).when(searchContext).findElements(any(By.class));
-            cut.manyBy(ByProducers.className("someClass"));
-        }
-
-    }
-
-    public interface TestFragment extends PageFragment {
     }
 
 }

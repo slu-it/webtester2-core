@@ -6,9 +6,12 @@ import static org.mockito.Mockito.mock;
 
 import org.junit.Test;
 
+import junit.extensions.UnitTest;
+
 import info.novatec.testit.webtester.conditions.Condition;
 
 
+@UnitTest
 public class NotTest {
 
     Object object = new Object();

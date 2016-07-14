@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import integration.BaseIntegrationTest;
+import junit.extensions.FeatureTest;
 
 import info.novatec.testit.webtester.pagefragments.Button;
 import info.novatec.testit.webtester.pagefragments.Div;
@@ -14,6 +15,7 @@ import info.novatec.testit.webtester.pages.Page;
 import info.novatec.testit.webtester.mouse.Mouse;
 
 
+@FeatureTest
 public class MouseUtilsFeatureTest extends BaseIntegrationTest {
 
     FeaturePage page;

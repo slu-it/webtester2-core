@@ -7,6 +7,8 @@ import java.util.List;
 
 import org.junit.Test;
 
+import junit.extensions.UnitTest;
+
 import info.novatec.testit.webtester.config.ConfigurationAdapter;
 import info.novatec.testit.webtester.config.ConfigurationBuilder;
 import info.novatec.testit.webtester.config.ConfigurationExporter;
@@ -15,6 +17,7 @@ import info.novatec.testit.webtester.config.adapters.GlobalFileConfigurationAdap
 import info.novatec.testit.webtester.config.adapters.LocalFileConfigurationAdapter;
 
 
+@UnitTest
 public class DefaultConfigurationBuilderTest {
 
     @Test

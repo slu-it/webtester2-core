@@ -10,6 +10,8 @@ import javax.annotation.PostConstruct;
 import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 
+import junit.extensions.UnitTest;
+
 import info.novatec.testit.webtester.browser.Browser;
 import info.novatec.testit.webtester.browser.WebDriverBrowser;
 import info.novatec.testit.webtester.config.BaseConfiguration;
@@ -18,6 +20,7 @@ import info.novatec.testit.webtester.internal.postconstruct.PostConstructInvoker
 import info.novatec.testit.webtester.pages.Page;
 
 
+@UnitTest
 public class PostConstructInvokerTest {
 
     @Test

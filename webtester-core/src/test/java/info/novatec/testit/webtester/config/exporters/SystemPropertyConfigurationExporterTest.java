@@ -6,7 +6,10 @@ import java.util.UUID;
 
 import org.junit.Test;
 
+import junit.extensions.UnitTest;
 
+
+@UnitTest
 public class SystemPropertyConfigurationExporterTest {
 
     String key = UUID.randomUUID().toString();

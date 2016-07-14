@@ -11,11 +11,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import junit.extensions.UnitTest;
+
 import info.novatec.testit.webtester.browser.Browser;
 import info.novatec.testit.webtester.events.AbstractEvent;
 import info.novatec.testit.webtester.events.ExceptionEvent;
 
 
+@UnitTest
 @RunWith(MockitoJUnitRunner.class)
 public class TakeScreenshotOnExceptionListenerTest {
 

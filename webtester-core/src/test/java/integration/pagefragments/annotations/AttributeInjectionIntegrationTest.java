@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import integration.BaseIntegrationTest;
+import junit.extensions.IntegrationTest;
 
 import info.novatec.testit.webtester.pagefragments.PageFragment;
 import info.novatec.testit.webtester.pagefragments.annotations.Attribute;
@@ -15,6 +16,7 @@ import info.novatec.testit.webtester.pagefragments.annotations.IdentifyUsing;
 import info.novatec.testit.webtester.pages.Page;
 
 
+@IntegrationTest
 public class AttributeInjectionIntegrationTest extends BaseIntegrationTest {
 
     TestPage page;

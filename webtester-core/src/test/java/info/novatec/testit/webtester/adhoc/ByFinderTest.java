@@ -2,149 +2,124 @@ package info.novatec.testit.webtester.adhoc;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.expectThrows;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 
 import java.util.stream.Stream;
 
-import org.junit.Test;
-import org.junit.experimental.runners.Enclosed;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
+
+import junit.extensions.UnitTest;
 
 import info.novatec.testit.webtester.internal.PageFragmentFactory;
 import info.novatec.testit.webtester.pagefragments.GenericElement;
 import info.novatec.testit.webtester.pagefragments.PageFragment;
 
 
-@RunWith(Enclosed.class)
-public class ByFinderTest {
+@UnitTest
+class ByFinderTest {
 
-    @RunWith(MockitoJUnitRunner.class)
-    public static abstract class AbstractByFinderTest {
+    @Mock
+    PageFragmentFactory factory;
+    @Mock
+    SearchContext searchContext;
+    @Mock
+    By by;
 
-        @Mock
-        PageFragmentFactory factory;
-        @Mock
-        SearchContext searchContext;
-        @Mock
-        By by;
+    @InjectMocks
+    ByFinder cut;
 
-        @InjectMocks
-        ByFinder cut;
+    @Test
+    @DisplayName("asGeneric() creates GenericElement for found WebElement")
+    void asGeneric_genericElementIsCreatedFromFoundWebElement() {
+
+        WebElement webElement = mock(WebElement.class);
+        doReturn(webElement).when(searchContext).findElement(by);
+
+        GenericElement mockElement = mock(GenericElement.class);
+        doReturn(mockElement).when(factory).pageFragment(GenericElement.class, webElement);
+
+        GenericElement element = cut.asGeneric();
+        assertThat(element).isSameAs(mockElement);
 
     }
 
-    public static class AsGeneric extends AbstractByFinderTest {
-
-        @Test
-        public void genericElementIsCreatedFromFoundWebElement() {
-
-            WebElement webElement = mock(WebElement.class);
-            doReturn(webElement).when(searchContext).findElement(by);
-
-            GenericElement mockElement = mock(GenericElement.class);
-            doReturn(mockElement).when(factory).pageFragment(GenericElement.class, webElement);
-
-            GenericElement element = cut.asGeneric();
-            assertThat(element).isSameAs(mockElement);
-
-        }
-
-        @Test(expected = NoSuchElementException.class)
-        public void noSuchElementExceptionsArePropagated() {
-            doThrow(NoSuchElementException.class).when(searchContext).findElement(by);
+    @Test
+    @DisplayName("asGeneric() throws NoSuchElementException if WebElement can't be found")
+    void asGeneric_noSuchElementExceptionsArePropagated() {
+        doThrow(NoSuchElementException.class).when(searchContext).findElement(by);
+        expectThrows(NoSuchElementException.class, () -> {
             cut.asGeneric();
-        }
+        });
+    }
+
+    @Test
+    @DisplayName("as(Class) creates instance of class for found WebElement")
+    void as_givenFragmentTypeIsCreatedFromFoundWebElement() {
+
+        WebElement webElement = mock(WebElement.class);
+        doReturn(webElement).when(searchContext).findElement(by);
+
+        PageFragment mockElement = mock(PageFragment.class);
+        doReturn(mockElement).when(factory).pageFragment(PageFragment.class, webElement);
+
+        PageFragment element = cut.as(PageFragment.class);
+        assertThat(element).isSameAs(mockElement);
 
     }
 
-    public static class As extends AbstractByFinderTest {
+    @Test
+    @DisplayName("as(Class) throws NoSuchElementException if WebElement can't be found")
+    void as_noSuchElementExceptionsArePropagated() {
+        doThrow(NoSuchElementException.class).when(searchContext).findElement(by);
+        expectThrows(NoSuchElementException.class, () -> {
+            cut.as(PageFragment.class);
+        });
+    }
 
-        @Test
-        public void givenFragmentTypeIsCreatedFromFoundWebElement() {
+    @Test
+    @DisplayName("asManyGenerics() creates stream of GenericElement for found WebElement instances")
+    void asManyGenerics_genericElementIsCreatedFromFoundWebElements() {
 
-            WebElement webElement = mock(WebElement.class);
-            doReturn(webElement).when(searchContext).findElement(by);
+        WebElement webElement1 = mock(WebElement.class);
+        WebElement webElement2 = mock(WebElement.class);
+        doReturn(asList(webElement1, webElement2)).when(searchContext).findElements(by);
 
-            TestFragment mockElement = mock(TestFragment.class);
-            doReturn(mockElement).when(factory).pageFragment(TestFragment.class, webElement);
+        GenericElement mockElement1 = mock(GenericElement.class);
+        GenericElement mockElement2 = mock(GenericElement.class);
+        doReturn(mockElement1).when(factory).pageFragment(GenericElement.class, webElement1);
+        doReturn(mockElement2).when(factory).pageFragment(GenericElement.class, webElement2);
 
-            TestFragment element = cut.as(TestFragment.class);
-            assertThat(element).isSameAs(mockElement);
-
-        }
-
-        @Test(expected = NoSuchElementException.class)
-        public void noSuchElementExceptionsArePropagated() {
-            doThrow(NoSuchElementException.class).when(searchContext).findElement(by);
-            cut.as(TestFragment.class);
-        }
+        Stream<GenericElement> elements = cut.asManyGenerics();
+        assertThat(elements).containsExactly(mockElement1, mockElement2);
 
     }
 
-    public static class AsManyGenerics extends AbstractByFinderTest {
+    @Test
+    @DisplayName("asMany(Class) creates stream of class for found WebElement instances")
+    void asMany_givenFragmentTypeIsCreatedFromFoundWebElements() {
 
-        @Test
-        public void genericElementIsCreatedFromFoundWebElements() {
+        WebElement webElement1 = mock(WebElement.class);
+        WebElement webElement2 = mock(WebElement.class);
+        doReturn(asList(webElement1, webElement2)).when(searchContext).findElements(by);
 
-            WebElement webElement1 = mock(WebElement.class);
-            WebElement webElement2 = mock(WebElement.class);
-            doReturn(asList(webElement1, webElement2)).when(searchContext).findElements(by);
+        PageFragment mockElement1 = mock(PageFragment.class);
+        PageFragment mockElement2 = mock(PageFragment.class);
+        doReturn(mockElement1).when(factory).pageFragment(PageFragment.class, webElement1);
+        doReturn(mockElement2).when(factory).pageFragment(PageFragment.class, webElement2);
 
-            GenericElement mockElement1 = mock(GenericElement.class);
-            GenericElement mockElement2 = mock(GenericElement.class);
-            doReturn(mockElement1).when(factory).pageFragment(GenericElement.class, webElement1);
-            doReturn(mockElement2).when(factory).pageFragment(GenericElement.class, webElement2);
+        Stream<PageFragment> elements = cut.asMany(PageFragment.class);
+        assertThat(elements).containsExactly(mockElement1, mockElement2);
 
-            Stream<GenericElement> elements = cut.asManyGenerics();
-            assertThat(elements).containsExactly(mockElement1, mockElement2);
-
-        }
-
-        @Test(expected = NoSuchElementException.class)
-        public void noSuchElementExceptionsArePropagated() {
-            doThrow(NoSuchElementException.class).when(searchContext).findElements(by);
-            cut.asManyGenerics();
-        }
-
-    }
-
-    public static class AsMany extends AbstractByFinderTest {
-
-        @Test
-        public void givenFragmentTypeIsCreatedFromFoundWebElements() {
-
-            WebElement webElement1 = mock(WebElement.class);
-            WebElement webElement2 = mock(WebElement.class);
-            doReturn(asList(webElement1, webElement2)).when(searchContext).findElements(by);
-
-            TestFragment mockElement1 = mock(TestFragment.class);
-            TestFragment mockElement2 = mock(TestFragment.class);
-            doReturn(mockElement1).when(factory).pageFragment(TestFragment.class, webElement1);
-            doReturn(mockElement2).when(factory).pageFragment(TestFragment.class, webElement2);
-
-            Stream<TestFragment> elements = cut.asMany(TestFragment.class);
-            assertThat(elements).containsExactly(mockElement1, mockElement2);
-
-        }
-
-        @Test(expected = NoSuchElementException.class)
-        public void noSuchElementExceptionsArePropagated() {
-            doThrow(NoSuchElementException.class).when(searchContext).findElements(by);
-            cut.asMany(TestFragment.class);
-        }
-
-    }
-
-    public interface TestFragment extends PageFragment {
     }
 
 }

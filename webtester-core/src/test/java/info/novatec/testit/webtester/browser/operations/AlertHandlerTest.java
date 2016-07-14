@@ -1,26 +1,26 @@
 package info.novatec.testit.webtester.browser.operations;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.expectThrows;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.runners.Enclosed;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.mockito.Answers;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.security.Credentials;
 import org.openqa.selenium.security.UserAndPassword;
+
+import junit.extensions.UnitTest;
 
 import info.novatec.testit.webtester.browser.Browser;
 import info.novatec.testit.webtester.events.EventSystem;
@@ -28,223 +28,197 @@ import info.novatec.testit.webtester.events.browser.AcceptedAlertEvent;
 import info.novatec.testit.webtester.events.browser.DeclinedAlertEvent;
 
 
-@RunWith(Enclosed.class)
-public class AlertHandlerTest {
+@UnitTest
+class AlertHandlerTest {
 
-    @RunWith(MockitoJUnitRunner.class)
-    static abstract class AbstractAlertHandlerTest {
+    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+    WebDriver webDriver;
+    @Mock
+    EventSystem events;
+    @Mock
+    Browser browser;
 
-        @Mock(answer = Answers.RETURNS_DEEP_STUBS)
-        WebDriver webDriver;
-        @Mock
-        EventSystem events;
-        @Mock
-        Browser browser;
+    @InjectMocks
+    AlertHandler cut;
 
-        @InjectMocks
-        AlertHandler cut;
-
-        @Before
-        public void init() {
-            doReturn(webDriver).when(browser).webDriver();
-            doReturn(events).when(browser).events();
-            doReturn(true).when(events).isEnabled();
-        }
-
-        Alert alertIsPresent(String message) {
-            Alert alert = mock(Alert.class);
-            when(alert.getText()).thenReturn(message);
-            when(webDriver.switchTo().alert()).thenReturn(alert);
-            return alert;
-        }
-
-        void alertIsNotPresent() {
-            NoAlertPresentException exception = new NoAlertPresentException();
-            when(webDriver.switchTo().alert()).thenThrow(exception);
-        }
-
+    @BeforeEach
+    void initializeMockedBrowser() {
+        doReturn(webDriver).when(browser).webDriver();
+        doReturn(events).when(browser).events();
+        doReturn(true).when(events).isEnabled();
     }
 
-    public static class Accept extends AbstractAlertHandlerTest {
+    @Test
+    @DisplayName("accept() accepts existing alert")
+    void accept_alertsCanBeAccepted() {
+        Alert alert = defineAlertToBePresent("hello alert!");
+        cut.accept();
+        verify(alert).accept();
+    }
 
-        @Captor
-        ArgumentCaptor<AcceptedAlertEvent> eventCaptor;
-
-        @Test
-        public void alertsCanBeAccepted() {
-            Alert alert = alertIsPresent("hello alert!");
+    @Test
+    @DisplayName("accept() throws exception if no alert exists")
+    void accept_acceptingNonExistentAlertThrowsException() {
+        defineAlertNotToBePresent();
+        expectThrows(NoAlertPresentException.class, () -> {
             cut.accept();
-            verify(alert).accept();
-        }
-
-        @Test(expected = NoAlertPresentException.class)
-        public void acceptingNonExistentAlertThrowsException() {
-            alertIsNotPresent();
-            cut.accept();
-        }
-
-        @Test
-        public void acceptingAnAlertFiresEvent() {
-            alertIsPresent("hello alert!");
-            cut.accept();
-            verify(events).fireEvent(eventCaptor.capture());
-            AcceptedAlertEvent event = eventCaptor.getValue();
-            assertThat(event.getAlertMessage()).isEqualTo("hello alert!");
-        }
-
+        });
     }
 
-    public static class AcceptIfPresent extends AbstractAlertHandlerTest {
-
-        @Captor
-        ArgumentCaptor<AcceptedAlertEvent> eventCaptor;
-
-        @Test
-        public void alertsCanBeAcceptedIfTheyArePresent() {
-            Alert alert = alertIsPresent("hello alert!");
-            cut.acceptIfPresent();
-            verify(alert).accept();
-        }
-
-        @Test
-        public void acceptingAnAlertIfItsPresentDoesNotThrowExceptionIfNoAlertExists() {
-            alertIsNotPresent();
-            cut.acceptIfPresent();
-            // no exception
-        }
-
-        @Test
-        public void acceptingAnAlertFiresEvent() {
-            alertIsPresent("hello alert!");
-            cut.acceptIfPresent();
-            verify(events).fireEvent(eventCaptor.capture());
-            AcceptedAlertEvent event = eventCaptor.getValue();
-            assertThat(event.getAlertMessage()).isEqualTo("hello alert!");
-        }
-
+    @Test
+    @DisplayName("accept() fires event")
+    void accept_acceptingAnAlertFiresEvent(ArgumentCaptor<AcceptedAlertEvent> eventCaptor) {
+        defineAlertToBePresent("hello alert!");
+        cut.accept();
+        verify(events).fireEvent(eventCaptor.capture());
+        AcceptedAlertEvent event = eventCaptor.getValue();
+        assertThat(event.getAlertMessage()).isEqualTo("hello alert!");
     }
 
-    public static class Decline extends AbstractAlertHandlerTest {
+    @Test
+    @DisplayName("acceptIfPresent() accepts existing alert")
+    void acceptIfPresent_alertsCanBeAcceptedIfTheyArePresent() {
+        Alert alert = defineAlertToBePresent("hello alert!");
+        cut.acceptIfPresent();
+        verify(alert).accept();
+    }
 
-        @Captor
-        ArgumentCaptor<DeclinedAlertEvent> eventCaptor;
+    @Test
+    @DisplayName("acceptIfPresent() doesn't throw exception if no alert exists")
+    void acceptIfPresent_acceptingAnAlertIfItsPresentDoesNotThrowExceptionIfNoAlertExists() {
+        defineAlertNotToBePresent();
+        cut.acceptIfPresent();
+        // no exception
+    }
 
-        @Test
-        public void alertsCanBeDeclined() {
-            Alert alert = alertIsPresent("hello alert!");
+    @Test
+    @DisplayName("acceptIfPresent() fires event")
+    void acceptIfPresent_acceptingAnAlertFiresEvent(ArgumentCaptor<AcceptedAlertEvent> eventCaptor) {
+        defineAlertToBePresent("hello alert!");
+        cut.acceptIfPresent();
+        verify(events).fireEvent(eventCaptor.capture());
+        AcceptedAlertEvent event = eventCaptor.getValue();
+        assertThat(event.getAlertMessage()).isEqualTo("hello alert!");
+    }
+
+    @Test
+    @DisplayName("decline() declines existing alert")
+    void decline_alertsCanBeDeclined() {
+        Alert alert = defineAlertToBePresent("hello alert!");
+        cut.decline();
+        verify(alert).dismiss();
+    }
+
+    @Test
+    @DisplayName("decline() throws exception if no alert exists")
+    void decline_decliningNonExistentAlertThrowsException() {
+        defineAlertNotToBePresent();
+        expectThrows(NoAlertPresentException.class, () -> {
             cut.decline();
-            verify(alert).dismiss();
-        }
+        });
+    }
 
-        @Test(expected = NoAlertPresentException.class)
-        public void decliningNonExistentAlertThrowsException() {
-            alertIsNotPresent();
-            cut.decline();
-        }
+    @Test
+    @DisplayName("decline() fires event")
+    void decline_decliningAnAlertFiresEvent(ArgumentCaptor<DeclinedAlertEvent> eventCaptor) {
+        defineAlertToBePresent("hello alert!");
+        cut.decline();
+        verify(events).fireEvent(eventCaptor.capture());
+        DeclinedAlertEvent event = eventCaptor.getValue();
+        assertThat(event.getAlertMessage()).isEqualTo("hello alert!");
+    }
 
-        @Test
-        public void decliningAnAlertFiresEvent() {
-            alertIsPresent("hello alert!");
-            cut.decline();
-            verify(events).fireEvent(eventCaptor.capture());
-            DeclinedAlertEvent event = eventCaptor.getValue();
-            assertThat(event.getAlertMessage()).isEqualTo("hello alert!");
-        }
+    @Test
+    @DisplayName("declineIfPresent() declines existing alert")
+    void declineIfPresent_alertsCanBeDeclinedIfTheyArePresent() {
+        Alert alert = defineAlertToBePresent("hello alert!");
+        cut.declineIfPresent();
+        verify(alert).dismiss();
+    }
+
+    @Test
+    @DisplayName("declineIfPresent() doesn't throw exception if no alert exists")
+    void declineIfPresent_decliningAnAlertIfItsPresentDoesNotThrowExceptionIfNoAlertExists() {
+        defineAlertNotToBePresent();
+        cut.declineIfPresent();
+        // no exception
+    }
+
+    @Test
+    @DisplayName("declineIfPresent() fires event")
+    void declineIfPresent_decliningAnAlertFiresEvent(ArgumentCaptor<DeclinedAlertEvent> eventCaptor) {
+        defineAlertToBePresent("hello alert!");
+        cut.declineIfPresent();
+        verify(events).fireEvent(eventCaptor.capture());
+        DeclinedAlertEvent event = eventCaptor.getValue();
+        assertThat(event.getAlertMessage()).isEqualTo("hello alert!");
+    }
+
+    @Test
+    @DisplayName("isPresent() returns false if alert is not present")
+    void isPresent_presenceOfNonExistentAlertReturnsFalse() {
+        defineAlertNotToBePresent();
+        assertThat(cut.isPresent()).isFalse();
+    }
+
+    @Test
+    @DisplayName("isPresent() returns true if alert is present")
+    void isPresent_presenceOfExistentAlertReturnsTrue() {
+        defineAlertToBePresent("hello alert!");
+        assertThat(cut.isPresent()).isTrue();
+    }
+
+    @Test
+    @DisplayName("get() returns empty optional if alert is not present")
+    void get_gettingNonExistentAlertReturnsEmptyOptional() {
+        defineAlertNotToBePresent();
+        assertThat(cut.get()).isEmpty();
+    }
+
+    @Test
+    @DisplayName("get() returns optional containing the alert if alert is present")
+    void get_gettingExistentAlertReturnsItAsAnOptional() {
+        defineAlertToBePresent("hello alert!");
+        assertThat(cut.get()).isPresent();
+    }
+
+    @Test
+    @DisplayName("authenticateUsing(Credentials) executes authentication with credentials")
+    void authenticateWith_canAuthenticateWithCredentials() {
+
+        Alert alert = defineAlertToBePresent("please sign in");
+        Credentials credentials = new UserAndPassword("foo", "bar");
+        cut.authenticateWith(credentials);
+
+        verify(alert).authenticateUsing(credentials);
 
     }
 
-    public static class DeclineIfPresent extends AbstractAlertHandlerTest {
+    @Test
+    @DisplayName("authenticateUsing(String, String) executes authentication with username and password")
+    void authenticateWith_canAuthenticateWithUsernameAndPassword(ArgumentCaptor<Credentials> credentialsCaptor) {
 
-        @Captor
-        ArgumentCaptor<DeclinedAlertEvent> eventCaptor;
+        Alert alert = defineAlertToBePresent("please sign in");
+        cut.authenticateWith("foo", "bar");
+        verify(alert).authenticateUsing(credentialsCaptor.capture());
 
-        @Test
-        public void alertsCanBeDeclinedIfTheyArePresent() {
-            Alert alert = alertIsPresent("hello alert!");
-            cut.declineIfPresent();
-            verify(alert).dismiss();
-        }
-
-        @Test
-        public void decliningAnAlertIfItsPresentDoesNotThrowExceptionIfNoAlertExists() {
-            alertIsNotPresent();
-            cut.declineIfPresent();
-            // no exception
-        }
-
-        @Test
-        public void decliningAnAlertFiresEvent() {
-            alertIsPresent("hello alert!");
-            cut.declineIfPresent();
-            verify(events).fireEvent(eventCaptor.capture());
-            DeclinedAlertEvent event = eventCaptor.getValue();
-            assertThat(event.getAlertMessage()).isEqualTo("hello alert!");
-        }
+        Credentials credentials = credentialsCaptor.getValue();
+        assertThat(credentials).isInstanceOf(UserAndPassword.class);
+        assertThat((( UserAndPassword ) credentials).getUsername()).isEqualTo("foo");
+        assertThat((( UserAndPassword ) credentials).getPassword()).isEqualTo("bar");
 
     }
 
-    public static class IsPresent extends AbstractAlertHandlerTest {
-
-        @Test
-        public void presenceOfNonExistentAlertReturnsFalse() {
-            alertIsNotPresent();
-            assertThat(cut.isPresent()).isFalse();
-        }
-
-        @Test
-        public void presenceOfExistentAlertReturnsTrue() {
-            alertIsPresent("hello alert!");
-            assertThat(cut.isPresent()).isTrue();
-        }
-
+    Alert defineAlertToBePresent(String message) {
+        Alert alert = mock(Alert.class);
+        when(alert.getText()).thenReturn(message);
+        when(webDriver.switchTo().alert()).thenReturn(alert);
+        return alert;
     }
 
-    public static class Get extends AbstractAlertHandlerTest {
-
-        @Test
-        public void gettingNonExistentAlertReturnsEmptyOptional() {
-            alertIsNotPresent();
-            assertThat(cut.get()).isEmpty();
-        }
-
-        @Test
-        public void gettingExistentAlertReturnsItAsAnOptional() {
-            alertIsPresent("hello alert!");
-            assertThat(cut.get()).isPresent();
-        }
-
-    }
-
-    public static class AuthenticateWith extends AbstractAlertHandlerTest {
-
-        @Captor
-        ArgumentCaptor<Credentials> credentialsCaptor;
-
-        @Test
-        public void canAuthenticateWithCredentials() {
-
-            Alert alert = alertIsPresent("please sign in");
-            Credentials credentials = new UserAndPassword("foo", "bar");
-            cut.authenticateWith(credentials);
-
-            verify(alert).authenticateUsing(credentials);
-
-        }
-
-        @Test
-        public void canAuthenticateWithUsernameAndPassword() {
-
-            Alert alert = alertIsPresent("please sign in");
-            cut.authenticateWith("foo", "bar");
-            verify(alert).authenticateUsing(credentialsCaptor.capture());
-
-            Credentials credentials = credentialsCaptor.getValue();
-            assertThat(credentials).isInstanceOf(UserAndPassword.class);
-            assertThat((( UserAndPassword ) credentials).getUsername()).isEqualTo("foo");
-            assertThat((( UserAndPassword ) credentials).getPassword()).isEqualTo("bar");
-
-        }
-
+    void defineAlertNotToBePresent() {
+        NoAlertPresentException exception = new NoAlertPresentException();
+        when(webDriver.switchTo().alert()).thenThrow(exception);
     }
 
 }

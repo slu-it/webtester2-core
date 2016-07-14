@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.openqa.selenium.NoSuchElementException;
 
 import integration.BaseIntegrationTest;
+import junit.extensions.IntegrationTest;
 import utils.events.EventCaptor;
 
 import info.novatec.testit.webtester.events.pagefragments.SelectedByIndexEvent;
@@ -21,6 +22,7 @@ import info.novatec.testit.webtester.pagefragments.annotations.IdentifyUsing;
 import info.novatec.testit.webtester.pages.Page;
 
 
+@IntegrationTest
 public class SingleSelectIntegrationTest extends BaseIntegrationTest {
 
     TestPage page;

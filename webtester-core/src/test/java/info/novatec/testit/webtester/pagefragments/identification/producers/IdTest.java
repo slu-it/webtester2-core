@@ -5,7 +5,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import org.openqa.selenium.By;
 
+import junit.extensions.UnitTest;
 
+
+@UnitTest
 public class IdTest {
 
     Id cut = new Id();

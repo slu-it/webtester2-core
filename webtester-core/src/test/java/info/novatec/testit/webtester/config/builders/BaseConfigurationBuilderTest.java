@@ -9,13 +9,15 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import org.junit.Test;
 import org.mockito.InOrder;
 
+import junit.extensions.UnitTest;
+
 import info.novatec.testit.webtester.config.BaseConfiguration;
 import info.novatec.testit.webtester.config.Configuration;
 import info.novatec.testit.webtester.config.ConfigurationAdapter;
 import info.novatec.testit.webtester.config.ConfigurationExporter;
-import info.novatec.testit.webtester.config.builders.BaseConfigurationBuilder;
 
 
+@UnitTest
 public class BaseConfigurationBuilderTest {
 
     @Test

@@ -5,9 +5,12 @@ import static utils.MockFactory.selectable;
 
 import org.junit.Test;
 
+import junit.extensions.UnitTest;
+
 import info.novatec.testit.webtester.pagefragments.traits.Selectable;
 
 
+@UnitTest
 public class SelectedTest {
 
     Selected cut = new Selected();

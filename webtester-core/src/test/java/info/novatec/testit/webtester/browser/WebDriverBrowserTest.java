@@ -15,6 +15,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.openqa.selenium.WebDriver;
 
 import utils.TestUtils;
+import junit.extensions.UnitTest;
 import utils.events.EventCaptor;
 
 import info.novatec.testit.webtester.browser.operations.UrlOpener;
@@ -24,6 +25,7 @@ import info.novatec.testit.webtester.internal.PageFactory;
 import info.novatec.testit.webtester.pages.Page;
 
 
+@UnitTest
 @RunWith(Enclosed.class)
 public class WebDriverBrowserTest {
 

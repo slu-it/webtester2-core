@@ -12,6 +12,7 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 
 import integration.BaseIntegrationTest;
+import junit.extensions.IntegrationTest;
 
 import info.novatec.testit.webtester.pagefragments.PageFragment;
 import info.novatec.testit.webtester.pagefragments.TextField;
@@ -20,6 +21,7 @@ import info.novatec.testit.webtester.pagefragments.annotations.Named;
 import info.novatec.testit.webtester.pages.Page;
 
 
+@IntegrationTest
 public class PageFragmentIntegrationTest extends BaseIntegrationTest {
 
     TestPage page;

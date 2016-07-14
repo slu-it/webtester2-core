@@ -6,6 +6,8 @@ import java.util.stream.Stream;
 
 import org.junit.Test;
 
+import junit.extensions.IntegrationTest;
+
 import info.novatec.testit.webtester.pagefragments.Headline;
 import info.novatec.testit.webtester.pagefragments.PageFragment;
 import info.novatec.testit.webtester.pagefragments.TextField;
@@ -14,6 +16,7 @@ import info.novatec.testit.webtester.pagefragments.identification.producers.XPat
 import info.novatec.testit.webtester.pages.Page;
 
 
+@IntegrationTest
 public class NestedPageFragmentsIntegrationTest extends BaseIntegrationTest {
 
     @Override

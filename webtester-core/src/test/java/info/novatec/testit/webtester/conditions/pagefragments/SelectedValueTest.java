@@ -5,9 +5,12 @@ import static utils.MockFactory.singleSelect;
 
 import org.junit.Test;
 
+import junit.extensions.UnitTest;
+
 import info.novatec.testit.webtester.pagefragments.SingleSelect;
 
 
+@UnitTest
 public class SelectedValueTest {
 
     SelectedValue cut = new SelectedValue("foo");

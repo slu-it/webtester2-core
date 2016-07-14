@@ -8,6 +8,8 @@ import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 
+import junit.extensions.UnitTest;
+
 import info.novatec.testit.webtester.conditions.pagefragments.Attribute;
 import info.novatec.testit.webtester.conditions.pagefragments.AttributeWithValue;
 import info.novatec.testit.webtester.conditions.pagefragments.Disabled;
@@ -33,6 +35,7 @@ import info.novatec.testit.webtester.conditions.syntax.Is;
 import info.novatec.testit.webtester.conditions.syntax.Not;
 
 
+@UnitTest
 @RunWith(Enclosed.class)
 public class ConditionsTest {
 

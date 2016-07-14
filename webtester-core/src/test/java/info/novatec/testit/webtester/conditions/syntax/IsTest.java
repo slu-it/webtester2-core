@@ -8,9 +8,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import junit.extensions.UnitTest;
+
 import info.novatec.testit.webtester.conditions.Condition;
 
 
+@UnitTest
 @RunWith(MockitoJUnitRunner.class)
 public class IsTest {
 

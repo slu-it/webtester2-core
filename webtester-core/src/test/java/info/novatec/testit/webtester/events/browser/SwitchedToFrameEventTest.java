@@ -8,9 +8,12 @@ import java.util.Optional;
 
 import org.junit.Test;
 
+import junit.extensions.UnitTest;
+
 import info.novatec.testit.webtester.pagefragments.PageFragment;
 
 
+@UnitTest
 public class SwitchedToFrameEventTest {
 
     @Test

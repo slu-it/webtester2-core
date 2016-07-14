@@ -5,8 +5,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 
 import integration.BaseIntegrationTest;
+import junit.extensions.IntegrationTest;
 
 
+@IntegrationTest
 public class AlertIntegrationTest extends BaseIntegrationTest {
 
     @Override

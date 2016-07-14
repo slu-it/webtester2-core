@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import integration.BaseIntegrationTest;
+import junit.extensions.FeatureTest;
 
 import info.novatec.testit.webtester.conditions.pagefragments.Editable;
 import info.novatec.testit.webtester.conditions.pagefragments.Present;
@@ -20,6 +21,7 @@ import info.novatec.testit.webtester.pagefragments.annotations.PostConstructMust
 import info.novatec.testit.webtester.pages.Page;
 
 
+@FeatureTest
 public class PostConstructMustBeBeOnPageFragmentsFeatureTest extends BaseIntegrationTest {
 
     @Before

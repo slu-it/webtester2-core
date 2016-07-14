@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import integration.BaseIntegrationTest;
+import junit.extensions.IntegrationTest;
 
 import info.novatec.testit.webtester.pagefragments.mapping.MappingException;
 import info.novatec.testit.webtester.pagefragments.UnorderedList;
@@ -13,6 +14,7 @@ import info.novatec.testit.webtester.pagefragments.annotations.IdentifyUsing;
 import info.novatec.testit.webtester.pages.Page;
 
 
+@IntegrationTest
 public class UnorderedListIntegrationTest extends BaseIntegrationTest {
 
     TestPage page;

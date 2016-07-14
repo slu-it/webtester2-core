@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import integration.BaseIntegrationTest;
+import junit.extensions.IntegrationTest;
 
 import info.novatec.testit.webtester.pagefragments.mapping.MappingException;
 import info.novatec.testit.webtester.pagefragments.GenericList;
@@ -17,6 +18,7 @@ import info.novatec.testit.webtester.pages.Page;
  * The functionality offered by the {@link GenericList} is tests in {@link OrderedListIntegrationTest} and {@link
  * UnorderedListIntegrationTest}.
  */
+@IntegrationTest
 public class GenericListIntegrationTest extends BaseIntegrationTest {
 
     TestPage page;

@@ -4,16 +4,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
-import org.junit.Test;
-import org.junit.experimental.runners.Enclosed;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 import org.openqa.selenium.By;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+
+import junit.extensions.UnitTest;
 
 import info.novatec.testit.webtester.browser.Browser;
 import info.novatec.testit.webtester.internal.PageFragmentFactory;
@@ -22,117 +22,98 @@ import info.novatec.testit.webtester.pagefragments.PageFragment;
 import info.novatec.testit.webtester.pagefragments.identification.ByProducers;
 
 
-@RunWith(Enclosed.class)
-public class AdHocFinderTest {
+@UnitTest
+class AdHocFinderTest {
 
-    @RunWith(MockitoJUnitRunner.class)
-    public static abstract class AbstractAdHocFinderTest {
+    @Mock
+    PageFragmentFactory factory;
+    @Mock
+    SearchContext searchContext;
 
-        @Mock
-        PageFragmentFactory factory;
-        @Mock
-        SearchContext searchContext;
+    @InjectMocks
+    AdHocFinder cut;
 
-        @InjectMocks
-        AdHocFinder cut;
+    @Test
+    @DisplayName("creating instance for Browser uses WebDriver as search context")
+    void creatingForBrowserUsesWebDriverAsSearchContext() {
 
-    }
+        Browser browser = mock(Browser.class);
+        WebDriver webDriver = mock(WebDriver.class);
+        doReturn(webDriver).when(browser).webDriver();
 
-    public static class FindString extends AbstractAdHocFinderTest {
+        AdHocFinder cut = new AdHocFinder(browser);
 
-        @Test
-        public void byFinderIsCreatedCorrectly() {
-
-            ByFinder finder = cut.find("#someId");
-            assertThat(finder.getFactory()).isSameAs(factory);
-            assertThat(finder.getSearchContext()).isSameAs(searchContext);
-
-            By by = finder.getBy();
-            assertThat(by).isInstanceOf(By.ByCssSelector.class);
-            assertThat(by).hasToString("By.cssSelector: #someId");
-
-        }
+        assertThat(cut.getSearchContext()).isSameAs(webDriver);
+        assertThat(cut.getFactory()).isNotNull();
 
     }
 
-    public static class FindBy extends AbstractAdHocFinderTest {
+    @Test
+    @DisplayName("creating instance for PageFragment uses WebElement as search context")
+    void creatingForPageFragmentUsesWebElementAsSearchContext() {
 
-        @Test
-        public void byFinderIsCreatedCorrectly() {
+        PageFragment pageFragment = mock(PageFragment.class);
+        WebElement webElement = mock(WebElement.class);
+        doReturn(webElement).when(pageFragment).webElement();
 
-            ByFinder finder = cut.findBy(ByProducers.id("someId"));
-            assertThat(finder.getFactory()).isSameAs(factory);
-            assertThat(finder.getSearchContext()).isSameAs(searchContext);
+        AdHocFinder cut = new AdHocFinder(pageFragment);
 
-            By by = finder.getBy();
-            assertThat(by).isInstanceOf(By.ById.class);
-            assertThat(by).hasToString("By.id: someId");
-
-        }
+        assertThat(cut.getSearchContext()).isSameAs(webElement);
+        assertThat(cut.getFactory()).isNotNull();
 
     }
 
-    public static class FindGeneric extends AbstractAdHocFinderTest {
+    @Test
+    @DisplayName("find(String) initializes ByFinder correctly")
+    void findString_byFinderIsCreatedCorrectly() {
 
-        @Test
-        public void typeFinderIsCreatedCorrectly() {
+        ByFinder finder = cut.find("#someId");
+        assertThat(finder.getFactory()).isSameAs(factory);
+        assertThat(finder.getSearchContext()).isSameAs(searchContext);
 
-            TypeFinder<GenericElement> finder = cut.findGeneric();
-            assertThat(finder.getFactory()).isSameAs(factory);
-            assertThat(finder.getSearchContext()).isSameAs(searchContext);
-            assertThat(finder.getFragmentClass()).isEqualTo(GenericElement.class);
-
-        }
-
-    }
-
-    public static class FindClass extends AbstractAdHocFinderTest {
-
-        @Test
-        public void typeFinderIsCreatedCorrectly() {
-
-            TypeFinder<TestFragment> finder = cut.find(TestFragment.class);
-            assertThat(finder.getFactory()).isSameAs(factory);
-            assertThat(finder.getSearchContext()).isSameAs(searchContext);
-            assertThat(finder.getFragmentClass()).isEqualTo(TestFragment.class);
-
-        }
-
-        public interface TestFragment extends PageFragment {
-        }
+        By by = finder.getBy();
+        assertThat(by).isInstanceOf(By.ByCssSelector.class);
+        assertThat(by).hasToString("By.cssSelector: #someId");
 
     }
 
-    public static class Construction {
+    @Test
+    @DisplayName("findBy(By) initializes ByFinder correctly")
+    void findBy_byFinderIsCreatedCorrectly() {
 
-        @Test
-        public void creatingForBrowserUsesWebDriverAsSearchContext() {
+        ByFinder finder = cut.findBy(ByProducers.id("someId"));
+        assertThat(finder.getFactory()).isSameAs(factory);
+        assertThat(finder.getSearchContext()).isSameAs(searchContext);
 
-            Browser browser = mock(Browser.class);
-            WebDriver webDriver = mock(WebDriver.class);
-            doReturn(webDriver).when(browser).webDriver();
+        By by = finder.getBy();
+        assertThat(by).isInstanceOf(By.ById.class);
+        assertThat(by).hasToString("By.id: someId");
 
-            AdHocFinder cut = new AdHocFinder(browser);
+    }
 
-            assertThat(cut.getSearchContext()).isSameAs(webDriver);
-            assertThat(cut.getFactory()).isNotNull();
+    @Test
+    @DisplayName("findGeneric() initializes TypeFinder correctly")
+    void findGeneric_typeFinderIsCreatedCorrectly() {
 
-        }
+        TypeFinder<GenericElement> finder = cut.findGeneric();
+        assertThat(finder.getFactory()).isSameAs(factory);
+        assertThat(finder.getSearchContext()).isSameAs(searchContext);
+        assertThat(finder.getFragmentClass()).isEqualTo(GenericElement.class);
 
-        @Test
-        public void creatingForPageFragmentUsesWebElementAsSearchContext() {
+    }
 
-            PageFragment pageFragment = mock(PageFragment.class);
-            WebElement webElement = mock(WebElement.class);
-            doReturn(webElement).when(pageFragment).webElement();
+    @Test
+    @DisplayName("find(Class) initializes TypeFinder correctly")
+    void findClass_typeFinderIsCreatedCorrectly() {
 
-            AdHocFinder cut = new AdHocFinder(pageFragment);
+        TypeFinder<TestFragment> finder = cut.find(TestFragment.class);
+        assertThat(finder.getFactory()).isSameAs(factory);
+        assertThat(finder.getSearchContext()).isSameAs(searchContext);
+        assertThat(finder.getFragmentClass()).isEqualTo(TestFragment.class);
 
-            assertThat(cut.getSearchContext()).isSameAs(webElement);
-            assertThat(cut.getFactory()).isNotNull();
+    }
 
-        }
-
+    public interface TestFragment extends PageFragment {
     }
 
 }

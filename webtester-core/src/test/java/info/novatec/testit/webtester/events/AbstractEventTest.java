@@ -8,7 +8,10 @@ import java.time.ZoneOffset;
 import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 
+import junit.extensions.UnitTest;
 
+
+@UnitTest
 public class AbstractEventTest {
 
     @Test

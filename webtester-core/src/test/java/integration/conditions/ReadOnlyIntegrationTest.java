@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import integration.BaseIntegrationTest;
+import junit.extensions.IntegrationTest;
 
 import info.novatec.testit.webtester.conditions.Conditions;
 import info.novatec.testit.webtester.pagefragments.Checkbox;
@@ -14,6 +15,7 @@ import info.novatec.testit.webtester.pagefragments.annotations.IdentifyUsing;
 import info.novatec.testit.webtester.pages.Page;
 
 
+@IntegrationTest
 public class ReadOnlyIntegrationTest extends BaseIntegrationTest {
 
     TestPage page;

@@ -6,7 +6,10 @@ import static org.mockito.Mockito.mock;
 
 import org.junit.Test;
 
+import junit.extensions.UnitTest;
 
+
+@UnitTest
 public class ExceptionEventTest {
 
     @Test

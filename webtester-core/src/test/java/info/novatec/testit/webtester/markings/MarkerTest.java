@@ -21,12 +21,15 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.openqa.selenium.support.Color;
 
+import junit.extensions.UnitTest;
+
 import info.novatec.testit.webtester.config.Configuration;
 import info.novatec.testit.webtester.css.CssProperties;
 import info.novatec.testit.webtester.css.StyleChanger;
 import info.novatec.testit.webtester.pagefragments.PageFragment;
 
 
+@UnitTest
 @RunWith(Enclosed.class)
 public class MarkerTest {
 

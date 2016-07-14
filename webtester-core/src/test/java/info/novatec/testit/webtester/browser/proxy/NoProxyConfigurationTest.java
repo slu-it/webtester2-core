@@ -9,7 +9,10 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.openqa.selenium.Proxy;
 
+import junit.extensions.UnitTest;
 
+
+@UnitTest
 @RunWith(MockitoJUnitRunner.class)
 public class NoProxyConfigurationTest {
 

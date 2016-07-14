@@ -5,9 +5,12 @@ import static utils.MockFactory.fragment;
 
 import org.junit.Test;
 
+import junit.extensions.UnitTest;
+
 import info.novatec.testit.webtester.pagefragments.PageFragment;
 
 
+@UnitTest
 public class VisibleTest {
 
     Visible cut = new Visible();

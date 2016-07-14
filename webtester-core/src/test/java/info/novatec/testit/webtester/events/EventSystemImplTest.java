@@ -21,9 +21,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import junit.extensions.UnitTest;
+
 import info.novatec.testit.webtester.browser.Browser;
 
 
+@UnitTest
 @RunWith(MockitoJUnitRunner.class)
 public class EventSystemImplTest {
 
